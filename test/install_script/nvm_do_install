@@ -6,3 +6,11 @@ NVM_ENV=testing \. ../../install.sh
 
 #nvm_do_install is available
 type nvm_do_install > /dev/null 2>&1 || die 'nvm_do_install is not available'
+
+FILE_PATH="$(pwd)/nvm_do_install"
+EXIT_CODE=$(NVM_DIR="${FILE_PATH}" nvm_do_install; echo $?)
+[ $EXIT_CODE -eq 1 ] || die 'nvm_do_install should fail if NVM_DIR is a file'
+
+ACTUAL="$(NVM_DIR="${FILE_PATH}" nvm_do_install)"
+EXPECTED="File \"${FILE_PATH}\" has the same name as installation directory."
+[ "${ACTUAL}" = "${EXPECTED}" ] || die 'nvm_do_install should fail if NVM_DIR is a file'
